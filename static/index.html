@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Chat</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Navigation Drawer -->
+    <div class="nav-drawer" id="nav-drawer">
+        <div class="drawer-overlay" id="drawer-overlay"></div>
+        <div class="drawer-content">
+            <div class="drawer-header">
+                <h2>Conversations</h2>
+                <button class="drawer-close" id="drawer-close">✕</button>
+            </div>
+            <div class="history-list" id="history-list">
+                <!-- Chat history will be populated here -->
+            </div>
+            <button class="new-chat-btn" id="new-chat-btn">+ New Chat</button>
+        </div>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="chat-container">
+        <div class="chat-header">
+            <button class="menu-btn" id="menu-btn">☰</button>
+            <h1>Offline Chat</h1>
+            <div class="header-spacer"></div>
+        </div>
+
+        <!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcome-screen">
+            <div class="welcome-card">
+                <div class="welcome-icon">🤖</div>
+                <h2>Welcome to Offline Chat</h2>
+                <p>Your personal AI assistant running locally on your device</p>
+                
+                <div class="assistance-section">
+                    <h3>💡 Get Started With:</h3>
+                    <div class="suggestion-box">
+                        <button class="suggestion-btn" data-prompt="Explain quantum computing to me like I'm 5">
+                            Explain quantum computing
+                        </button>
+                        <button class="suggestion-btn" data-prompt="What are the best practices for Python programming?">
+                            Python best practices
+                        </button>
+                        <button class="suggestion-btn" data-prompt="Tell me a funny joke">
+                            Tell me a joke
+                        </button>
+                        <button class="suggestion-btn" data-prompt="Summarize the history of artificial intelligence">
+                            AI history
+                        </button>
+                    </div>
+                </div>
+
+                <div class="features-section">
+                    <h3>✨ Features:</h3>
+                    <ul>
+                        <li>💾 Works completely offline - no internet required</li>
+                        <li>🚀 Fast local AI inference</li>
+                        <li>📜 Chat history saved locally</li>
+                        <li>🔒 Privacy-focused - your data never leaves your device</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div class="chat-messages" id="chat-messages" style="display: none;">
+            <!-- Messages will be appended here -->
+        </div>
+
+        <div class="typing-indicator" id="typing-indicator" style="display: none;">
+            <div class="message-card bot">
+                <div class="message-body">
+                    <div class="message-avatar bot">🤖</div>
+                    <div class="message-content">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <div class="message-timestamp">Thinking...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="Ask me anything...">
+            <button id="send-button" class="send-btn">⬆️</button>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
