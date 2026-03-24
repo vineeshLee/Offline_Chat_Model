@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const newChatBtn = document.getElementById('new-chat-btn');
     const menuBtn = document.getElementById('menu-btn');
     const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+    const toastNotification = document.getElementById('toast-notification');
+    const toastMessage = document.getElementById('toast-message');
 
     // Chat state
     let currentChatId = null;
@@ -63,10 +65,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function sendMessage() {
         const message = messageInput.value.trim();
-        if (message === '') return;
+        console.log('sendMessage called with:', message);
+        
+        if (message === '') {
+            console.log('Empty message, returning');
+            return;
+        }
 
         // Hide welcome screen and show chat
         if (welcomeScreen.style.display !== 'none') {
+            console.log('Hiding welcome screen and showing chat messages');
             welcomeScreen.style.display = 'none';
             chatMessages.style.display = 'flex';
             chatMessages.style.flexDirection = 'column';
@@ -74,10 +82,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // If starting a new conversation, create new chat
         if (!currentChatId) {
+            console.log('Creating new chat');
             startNewChat();
         }
 
         // Add user message
+        console.log('Adding user message');
         addMessage(message, 'user');
         messageInput.value = '';
 
@@ -85,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showTypingIndicator();
 
         // Send to server
+        console.log('Sending to server...');
         fetch('/chat', {
             method: 'POST',
             headers: {
@@ -92,8 +103,12 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({ message: message }),
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Server response received');
+            return response.json();
+        })
         .then(data => {
+            console.log('Server data:', data);
             hideTypingIndicator();
             const timestamp = data.timestamp ? 
                 new Date(data.timestamp).toLocaleTimeString('en-US', { 
@@ -117,6 +132,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function addMessage(text, sender, timestamp = null) {
+        console.log('Adding message:', { text: text.substring(0, 50) + '...', sender, timestamp });
+        
         if (!timestamp) {
             timestamp = new Date().toLocaleTimeString('en-US', { 
                 hour: '2-digit', 
@@ -127,6 +144,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}`;
+        
+        // Create message card wrapper
+        const messageCard = document.createElement('div');
+        messageCard.className = 'message-card';
         
         // Create message body with avatar and content
         const messageBody = document.createElement('div');
@@ -155,10 +176,13 @@ document.addEventListener('DOMContentLoaded', function() {
         contentWrapper.appendChild(timestampDiv);
         
         messageBody.appendChild(contentWrapper);
-        messageDiv.appendChild(messageBody);
+        messageCard.appendChild(messageBody);
+        messageDiv.appendChild(messageCard);
         
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        console.log('Message added to DOM, chatMessages display:', chatMessages.style.display);
 
         // Add to current chat with metadata
         currentChat.messages.push({ 
@@ -207,8 +231,68 @@ document.addEventListener('DOMContentLoaded', function() {
         chatMessages.style.display = 'flex';
         chatMessages.style.flexDirection = 'column';
 
+        // Add welcome message from bot
+        addWelcomeMessage();
+
         loadChatHistory();
         closeDrawer();
+    }
+
+    function addWelcomeMessage() {
+        const welcomeText = "👋 Hello! I'm your offline AI assistant. I'm here to help you with any questions or tasks you have. Feel free to ask me anything!";
+        const timestamp = new Date().toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message bot';
+
+        // Create message card wrapper
+        const messageCard = document.createElement('div');
+        messageCard.className = 'message-card';
+
+        // Create message body with avatar and content
+        const messageBody = document.createElement('div');
+        messageBody.className = 'message-body';
+
+        // Add avatar/indicator
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar bot';
+        avatar.textContent = '🤖';
+        messageBody.appendChild(avatar);
+
+        // Create content wrapper
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'message-content';
+
+        // Add bubble
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'message-bubble';
+        bubbleDiv.innerHTML = formatMessageText(welcomeText);
+        contentWrapper.appendChild(bubbleDiv);
+
+        // Add timestamp
+        const timestampDiv = document.createElement('div');
+        timestampDiv.className = 'message-timestamp';
+        timestampDiv.textContent = timestamp;
+        contentWrapper.appendChild(timestampDiv);
+
+        messageBody.appendChild(contentWrapper);
+        messageCard.appendChild(messageBody);
+        messageDiv.appendChild(messageCard);
+
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Add to current chat with metadata
+        currentChat.messages.push({
+            sender: 'bot',
+            text: welcomeText,
+            timestamp,
+            id: Date.now()
+        });
     }
 
     function loadChat(chatId) {
@@ -256,10 +340,108 @@ document.addEventListener('DOMContentLoaded', function() {
             const chat = chats[chatId];
             const historyItem = document.createElement('div');
             historyItem.className = 'history-item' + (currentChatId === chatId ? ' active' : '');
-            historyItem.textContent = chat.title || 'Untitled Chat';
-            historyItem.addEventListener('click', () => loadChat(chatId));
+            historyItem.setAttribute('data-chat-id', chatId); // Add data attribute for identification
+
+            // Create history item content
+            const itemContent = document.createElement('div');
+            itemContent.className = 'history-item-content';
+            itemContent.textContent = chat.title || 'Untitled Chat';
+            itemContent.addEventListener('click', () => loadChat(chatId));
+
+            // Create delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'history-delete-btn';
+            deleteBtn.innerHTML = '🗑️';
+            deleteBtn.title = `Delete "${chat.title || 'Untitled Chat'}"`;
+            deleteBtn.setAttribute('aria-label', `Delete chat: ${chat.title || 'Untitled Chat'}`);
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteChat(chatId);
+            });
+
+            historyItem.appendChild(itemContent);
+            historyItem.appendChild(deleteBtn);
             historyList.appendChild(historyItem);
         });
+    }
+
+    function deleteChat(chatId) {
+        if (!chats[chatId]) return;
+
+        // Get chat title for better confirmation message
+        const chatTitle = chats[chatId].title || 'Untitled Chat';
+
+        // Create a more user-friendly confirmation dialog
+        const isConfirmed = confirm(`Delete "${chatTitle}"?\n\nThis action cannot be undone.`);
+
+        if (!isConfirmed) return;
+
+        // Add visual feedback - disable the button temporarily
+        const historyItem = document.querySelector(`[data-chat-id="${chatId}"]`) ||
+                           document.querySelector('.history-item.active');
+        if (historyItem) {
+            historyItem.style.opacity = '0.5';
+            historyItem.style.pointerEvents = 'none';
+        }
+
+        try {
+            // Remove from chats object
+            delete chats[chatId];
+            localStorage.setItem('chats', JSON.stringify(chats));
+
+            // If deleting current chat, handle navigation
+            if (currentChatId === chatId) {
+                const remainingChats = Object.keys(chats);
+                if (remainingChats.length > 0) {
+                    // Load the most recent remaining chat
+                    const mostRecentChatId = remainingChats[remainingChats.length - 1];
+                    loadChat(mostRecentChatId);
+                } else {
+                    // No chats left, show welcome screen and start fresh
+                    currentChatId = null;
+                    currentChat = { messages: [] };
+                    chatMessages.innerHTML = '';
+                    welcomeScreen.style.display = 'flex';
+                    chatMessages.style.display = 'none';
+                    localStorage.removeItem('lastChatId');
+                }
+            }
+
+            // Refresh the history list
+            loadChatHistory();
+
+            // Show success feedback (could be enhanced with a toast notification)
+            console.log(`Chat "${chatTitle}" deleted successfully`);
+            showToast(`"${chatTitle}" deleted successfully`, 'success');
+
+        } catch (error) {
+            console.error('Error deleting chat:', error);
+            // Re-enable the button if there was an error
+            if (historyItem) {
+                historyItem.style.opacity = '1';
+                historyItem.style.pointerEvents = 'auto';
+            }
+            showToast('Failed to delete chat. Please try again.', 'error');
+        }
+    }
+
+    function showToast(message, type = 'success') {
+        toastMessage.textContent = message;
+        toastNotification.className = `toast-notification ${type}`;
+
+        // Show the toast
+        toastNotification.style.display = 'block';
+        setTimeout(() => {
+            toastNotification.classList.add('show');
+        }, 10);
+
+        // Hide the toast after 3 seconds
+        setTimeout(() => {
+            toastNotification.classList.remove('show');
+            setTimeout(() => {
+                toastNotification.style.display = 'none';
+            }, 300);
+        }, 3000);
     }
 
     function toggleDrawer() {

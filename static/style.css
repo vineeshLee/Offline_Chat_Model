@@ -103,12 +103,12 @@ body {
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 13px;
-    color: #333333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    position: relative;
 }
 
 .history-item:hover {
@@ -121,6 +121,97 @@ body {
     background: linear-gradient(135deg, #000000 0%, #333333 100%);
     color: #ffffff;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.history-item.active .history-item-content {
+    color: #ffffff;
+}
+
+.history-item-content {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    color: #333333;
+    cursor: pointer;
+    padding-right: 8px;
+}
+
+.history-delete-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e0e0e0;
+    color: #666666;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.history-delete-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 107, 107, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.history-delete-btn:hover::before {
+    width: 100%;
+    height: 100%;
+}
+
+.history-delete-btn:hover {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: #ffffff;
+    border-color: #ff6b6b;
+    transform: scale(1.1);
+    box-shadow: 0 3px 8px rgba(255, 107, 107, 0.3);
+}
+
+.history-delete-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 1px 2px rgba(255, 107, 107, 0.2);
+}
+
+.history-item.active .history-delete-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffaaaa;
+}
+
+.history-item.active .history-delete-btn:hover {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: #ffffff;
+    border-color: #ff6b6b;
+}
+
+/* Add a subtle pulse animation for better visibility */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.history-delete-btn:focus {
+    outline: none;
+    animation: pulse 0.6s ease-in-out;
+    box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.3);
 }
 
 .new-chat-btn {
@@ -572,21 +663,199 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .drawer-content {
+        width: 320px;
+    }
+
+    .message-card {
+        max-width: 85%;
+    }
+
+    .welcome-card {
+        max-width: 600px;
+        padding: 35px 25px;
+    }
+
+    .chat-header h1 {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .drawer-content {
+        width: 300px;
+    }
+
+    .message-card {
+        max-width: 85%;
+    }
+
+    .welcome-card {
+        max-width: 550px;
+        padding: 32px 22px;
+    }
+
+    .suggestion-box {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .chat-header h1 {
+        font-size: 17px;
+    }
+}
+
 @media (max-width: 768px) {
     .drawer-content {
-        width: 75vw;
+        width: 280px;
     }
 
     .message-card {
         max-width: 90%;
     }
 
+    .message-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+        margin: 10px;
+    }
+
+    .message-bubble {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+
+    .message-timestamp {
+        font-size: 10px;
+        padding: 0 10px;
+    }
+
     .welcome-card {
-        padding: 30px 20px;
+        max-width: 90%;
+        padding: 28px 18px;
+    }
+
+    .welcome-icon {
+        font-size: 48px;
+    }
+
+    .welcome-card h2 {
+        font-size: 24px;
     }
 
     .chat-header h1 {
         font-size: 16px;
+    }
+
+    .chat-header {
+        padding: 14px 18px;
+    }
+
+    .chat-input {
+        padding: 14px 18px;
+    }
+
+    #message-input {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+
+    .send-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .suggestion-box {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .suggestion-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 640px) {
+    .drawer-content {
+        width: 260px;
+    }
+
+    .message-card {
+        max-width: 92%;
+    }
+
+    .message-avatar {
+        width: 26px;
+        height: 26px;
+        font-size: 14px;
+        margin: 8px;
+    }
+
+    .message-bubble {
+        padding: 8px 12px;
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .message-timestamp {
+        font-size: 9px;
+        padding: 0 8px;
+    }
+
+    .welcome-card {
+        max-width: 95%;
+        padding: 24px 16px;
+    }
+
+    .welcome-icon {
+        font-size: 40px;
+        margin-bottom: 16px;
+    }
+
+    .welcome-card h2 {
+        font-size: 20px;
+    }
+
+    .welcome-card p {
+        font-size: 13px;
+        margin-bottom: 24px;
+    }
+
+    .chat-header h1 {
+        font-size: 15px;
+    }
+
+    .chat-header {
+        padding: 12px 16px;
+    }
+
+    .chat-input {
+        padding: 12px 16px;
+    }
+
+    #message-input {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .send-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .suggestion-btn {
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+
+    .features-section li {
+        font-size: 12px;
+        padding: 6px 0;
     }
 }
 
@@ -599,26 +868,368 @@ body {
         max-width: 95%;
     }
 
-    .suggestion-btn {
+    .message-avatar {
+        width: 24px;
+        height: 24px;
         font-size: 12px;
-        padding: 10px 14px;
+        margin: 6px;
+    }
+
+    .message-bubble {
+        padding: 6px 10px;
+        font-size: 11px;
+        line-height: 1.3;
+    }
+
+    .message-timestamp {
+        font-size: 8px;
+        padding: 0 6px;
+    }
+
+    .welcome-card {
+        max-width: 98%;
+        padding: 20px 14px;
+    }
+
+    .welcome-icon {
+        font-size: 36px;
+        margin-bottom: 14px;
+    }
+
+    .welcome-card h2 {
+        font-size: 18px;
+    }
+
+    .welcome-card p {
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    .chat-header h1 {
+        font-size: 14px;
     }
 
     .chat-header {
-        padding: 12px 16px;
-    }
-
-    .chat-input {
-        padding: 12px 16px;
-    }
-
-    #message-input {
         padding: 10px 14px;
     }
 
+    .menu-btn {
+        padding: 6px 10px;
+        font-size: 18px;
+    }
+
+    .chat-input {
+        padding: 10px 14px;
+    }
+
+    #message-input {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+
     .send-btn {
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .suggestion-btn {
+        padding: 6px 10px;
+        font-size: 10px;
+    }
+
+    .features-section li {
+        font-size: 11px;
+        padding: 4px 0;
+    }
+
+    .assistance-section h3,
+    .features-section h3 {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .drawer-content {
+        width: 90vw;
+    }
+
+    .message-card {
+        max-width: 98%;
+    }
+
+    .message-avatar {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        margin: 4px;
+    }
+
+    .message-bubble {
+        padding: 4px 8px;
+        font-size: 10px;
+        line-height: 1.2;
+    }
+
+    .message-timestamp {
+        font-size: 7px;
+        padding: 0 4px;
+    }
+
+    .welcome-card {
+        max-width: 100%;
+        padding: 16px 12px;
+    }
+
+    .welcome-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .welcome-card h2 {
         font-size: 16px;
+    }
+
+    .welcome-card p {
+        font-size: 11px;
+        margin-bottom: 16px;
+    }
+
+    .chat-header h1 {
+        font-size: 13px;
+    }
+
+    .chat-header {
+        padding: 8px 12px;
+    }
+
+    .menu-btn {
+        padding: 4px 8px;
+        font-size: 16px;
+    }
+
+    .chat-input {
+        padding: 8px 12px;
+    }
+
+    #message-input {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    .send-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 10px;
+    }
+
+    .suggestion-btn {
+        padding: 4px 8px;
+        font-size: 9px;
+    }
+
+    .features-section li {
+        font-size: 10px;
+        padding: 2px 0;
+    }
+
+    .assistance-section h3,
+    .features-section h3 {
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .drawer-header h2 {
+        font-size: 16px;
+    }
+
+    .new-chat-btn {
+        margin: 8px;
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+
+    .history-item {
+        padding: 10px 12px;
+        margin: 4px 0;
+    }
+
+    .history-item-content {
+        font-size: 12px;
+    }
+
+    .history-delete-btn {
+        font-size: 12px;
+        padding: 2px;
+    }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1440px) {
+    .drawer-content {
+        width: 340px;
+    }
+
+    .message-card {
+        max-width: 70%;
+    }
+
+    .welcome-card {
+        max-width: 600px;
+        padding: 50px 40px;
+    }
+
+    .welcome-icon {
+        font-size: 72px;
+    }
+
+    .welcome-card h2 {
+        font-size: 32px;
+    }
+
+    .chat-header h1 {
+        font-size: 22px;
+    }
+
+    .suggestion-box {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+}
+
+@media (min-width: 1920px) {
+    .drawer-content {
+        width: 380px;
+    }
+
+    .message-card {
+        max-width: 60%;
+    }
+
+    .welcome-card {
+        max-width: 700px;
+        padding: 60px 50px;
+    }
+
+    .welcome-icon {
+        font-size: 80px;
+    }
+
+    .welcome-card h2 {
+        font-size: 36px;
+    }
+
+    .chat-header h1 {
+        font-size: 24px;
+    }
+
+    .suggestion-box {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .suggestion-btn {
+        padding: 16px 20px;
+        font-size: 15px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .history-delete-btn {
+        opacity: 1;
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .suggestion-btn:active {
+        transform: scale(0.98);
+    }
+
+    .history-item:active {
+        transform: scale(0.98);
+    }
+
+    .new-chat-btn:active {
+        transform: scale(0.98);
+    }
+
+    .send-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* Make delete button more prominent on touch devices */
+    .history-delete-btn {
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid #e0e0e0;
+    }
+
+    .history-delete-btn:hover {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        border-color: #ff6b6b;
+        transform: scale(1.05);
+    }
+}
+
+/* Toast Notification */
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: #ffffff;
+    padding: 12px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(76, 175, 80, 0.3);
+    z-index: 1000;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    max-width: 300px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toast-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.toast-message {
+    flex: 1;
+    line-height: 1.4;
+}
+
+/* Error toast variant */
+.toast-notification.error {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    box-shadow: 0 4px 16px rgba(244, 67, 54, 0.3);
+}
+
+/* Responsive toast */
+@media (max-width: 480px) {
+    .toast-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        transform: translateY(-100px);
+    }
+
+    .toast-notification.show {
+        transform: translateY(0);
     }
 }
